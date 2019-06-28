@@ -71,4 +71,51 @@ const executeResult2 = executeIfHasField({foo: 42}, 'foo');
 * */
 
 const tapResult =_.tap([1, 2, 3], console.log)
-console.log(tapResult);
+
+
+var a = {
+  name: 'a',
+  fun: function () {
+      return this;
+  }  
+}
+
+var bFunc = function () {
+  return this;
+}
+
+var b = { name: 'b', fun: bFunc,}
+
+const mapResult = _.map({a: 1, b: 2}, function (value, key) {
+    return [key, value];
+})
+
+var nums = [100, 2, 25];
+
+function div(x, y) {
+    return x / y;
+}
+
+var reduceResult = _.reduce(nums, div);
+
+var reduceRet = _.reduce(nums, function (acculator, currentValue) {
+    return acculator / currentValue;
+})
+
+var reduceRight = _.reduceRight(nums, function (acculator, currentValue) {
+    return acculator / currentValue;
+})
+
+function allOf() {
+    return _.reduceRight(arguments, function (truth, f) {
+        return truth && f();
+    }, true)
+}
+
+function anyOf() {
+    return _.reduceRight(arguments, function (truth, f) {
+        return truth || f();
+    }, false)
+}
+
+
