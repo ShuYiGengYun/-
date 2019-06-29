@@ -77,7 +77,7 @@ var a = {
   name: 'a',
   fun: function () {
       return this;
-  }  
+  }
 }
 
 var bFunc = function () {
@@ -117,5 +117,82 @@ function anyOf() {
         return truth || f();
     }, false)
 }
+
+
+var people = [
+  {
+    name: 'Rick',
+    age: 30,
+  },
+  {
+    name:　'Jaka',
+    age: 30,
+  },
+  {
+    name: 'zengzhaoyuh',
+    age: 27,
+  }
+]
+
+
+var sortByResult = _.sortBy(people, function (p) {
+  return p.age;
+})
+
+var albums = [
+  {
+    title: 'Sabbath Bloody Sabbath',
+    gener: 'Metal'
+  },
+  {
+    title: 'Scientist',
+    gener: 'Dub'
+  },
+  {
+    title: 'Undertow',
+    gener: 'Metal'
+  }
+];
+
+
+var groupByResult = _.groupBy(albums, function (a) {
+  return a.gener;
+})
+
+var countByResult = _.countBy(albums, function (a) {
+    return a.gener;
+})
+
+
+function cat() {
+  var head = _.first(arguments);
+  if (existy(head)) {
+    return head.concat.apply(head, _.rest(arguments));
+  } else {
+    return [];
+  }
+}
+
+const catResult = cat(null,[1,2,3], [4,5], [6,7,8]);
+
+
+function construct(head, tail) {
+  return cat([head], _.toArray(tail));
+}
+
+
+const constructResult = construct(42, [1,2,3,4]);
+
+function mapcat(fun, coll) {
+  return cat.apply(null, _.map(coll, fun))
+}
+
+
+var mapcatResult = mapcat(function (e) {
+  return construct(e, [','])
+}, [1, 2, 3])
+
+
+
 
 
