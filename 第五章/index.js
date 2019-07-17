@@ -38,3 +38,34 @@ var plays = [
 _.countBy(plays,  function (song) {
   return [song.artist, song.track].join('-');
 })
+
+
+
+function toHex(n) {
+  var hex = n.toString(16);
+  return (hex.length < 2) ? [0, hex].join('') : hex;
+}
+
+function rgbToHexString(r, g, b) {
+  return ['#', toHex(r), toHex(g), toHex(b)].join('');
+}
+
+// console.log(rgbToHexString(255, 255, 255));
+
+
+
+
+
+function partial1(fun, arg1) {
+  return function (/* args */) {
+
+  }
+}
+
+
+var isntString = _.compose(function (x) {
+  return !x
+}, _.isString);
+
+var isntStringResult = isntString([]);
+console.log(isntStringResult);

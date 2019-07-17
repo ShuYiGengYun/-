@@ -26,7 +26,7 @@ const mapResult = _.map({a: 1, b: 2}, function (value, key) {
 
 var nums = [100, 2, 25];
 
-function div(x, y) {
+export var div = function div(x, y) {
   return x / y;
 }
 

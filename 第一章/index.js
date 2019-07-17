@@ -1,6 +1,6 @@
 const _  = require('underscore');
 
-function existy(x) {
+var existy = function existy(x) {
   return x != null;
 }
 
