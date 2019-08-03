@@ -54,7 +54,8 @@ function rgbToHexString(r, g, b) {
 
 function partial1(fun, arg1) {
     return function (/* args */) {
-
+        var args = construct(arg1, arguments);
+        return fun.apply(fun, args);
     }
 }
 
@@ -76,6 +77,10 @@ var influences = [
     ['Self', 'Lua'],
     ['Self', 'JavaScript']
 ]
+function construct(head, tail) {
+    return cat([head], _.toArray(tail));
+}
+
 
 function nexts(graph, node) {
     if (_.isEmpty(graph)) {
@@ -93,6 +98,10 @@ function nexts(graph, node) {
     }
 }
 
+/**
+ * 先验证是否为数字再验证是否为偶数;
+ * @returns {function(): *}
+ */
 
 function andify() {
     var preds = _.toArray(arguments);
@@ -104,21 +113,151 @@ function andify() {
              } else {
                 return _.every(args, _.first(ps)) && everything(_.rest(ps), truth);
             }
-            return everything(preds, true);
 
         }
+        return everything(preds, true)
     }
 }
 
 
+function isEven(x) {
+    return x % 2 === 0;
+}
+
+var evenNums = andify(_.isNumber, isEven)
+
+var result = evenNums(4,2,6,8)
+
+
+function orify(/* preds */) {
+    var preds = _.toArray(arguments);
+    return function (/* args */) {
+        var args = _.toArray(arguments);
+        var somethings = function (ps, truth) {
+            if (_.isEmpty(ps)) {
+                return truth
+            } else {
+                return _.some(args, _.first(ps)) || somethings(_.rest(ps), truth);
+            }
+        }
+        return somethings(preds, false)
+    }
+}
+
+
+var orifyBool = orify(_.isNumber, isEven)
+var orifyResult = orifyBool(2,4,6);
+
+
+function evenSteven(n) {
+    if (n === 0) {
+        return true;
+    } else {
+        return oddJohn(Math.abs(n) - 1)
+    }
+}
+
+
+function oddJohn(n) {
+    if (n === 0) {
+        return false;
+    } else {
+        return evenSteven(Math.abs(n) -1)
+    }
+}
+
+var evenStevenRes = evenSteven(2)
+
+
+function existy(x) {
+    return x != null;
+}
+
+function cat() {
+    var head = _.first(arguments);
+    if (existy(head)) {
+        return head.concat.apply(head, _.rest(arguments));
+    } else {
+        return [];
+    }
+}
+
+
+function flat(array) {
+    if (_.isArray(array)) {
+        return cat.apply(cat, _.map(array, flat))
+    } else {
+        return [array]
+    }
+}
+
+var flatResult = flat([1,2,3, [4, 5, [6]]])
 
 
 
+/* 深度克隆 */
+var x = [{ a: [1, 2, 3], b: 42}, { c: { d: []}}];
+var y = deepClone(x)
 
 
+function deepClone(obj) {
+    if (!existy(obj) || !_.isObject(obj)) {
+        return obj;
+    }
+    var temp = new obj.constructor();
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            temp[key] = deepClone(obj[key])
+        }
+    }
+    return temp;
+}
+
+function visit(mapFun, resultFun, array) {
+    if (_.isArray(array)) {
+        return resultFun(_.map(array, mapFun))
+    } else {
+        return resultFun(array)
+    }
+}
+
+var visitResult = visit(_.isNumber, _.identity, [1, 2, null, 3]);
+
+function postDepth(fun, ary) {
+    return visit(partial1(postDepth, fun), fun, ary)
+}
 
 
+function preDepth(fun, ary) {
+    return visit(partial1(preDepth, fun), fun, fun(ary))
+}
+
+function evenOline(n) {
+    if (n === 0) {
+        return true
+    } else {
+        return partial1(oddOline, Math.abs(n) - 1)
+    }
+}
+
+function oddOline(n) {
+    if (n === 0) {
+        return false
+    } else {
+        return partial1(evenOline, Math.abs(n) - 1)
+    }
+}
 
 
+function trampoline(fun) {
+    var result = fun.apply(fun, _.rest(arguments))
+    while (_.isFunction(result)){
+        result = result()
+    }
+    return result;
+}
 
+
+var trampolineResult = trampoline(oddOline, 3)
+console.log(trampolineResult);
 
